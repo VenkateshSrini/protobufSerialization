@@ -1,6 +1,8 @@
 using System.IO;
 using System.Threading;
+using System.Data;
 using ProtoBuf;
+using ProtoBuf.Data;
 using ProtoBuf.Meta;
 namespace Serialiation.PB.Console;
 public static class ProtobufSerializationHeper
@@ -52,12 +54,51 @@ public static class ProtobufSerializationHeper
             semaphoreSlimforDeserialization.Release();
         }
     }
+    public static async Task<Stream> SerializeDataTable(DataTable dataTable)
+    {
+        await semaphoreSlimforSerialization.WaitAsync();
+        var memoryStream = new MemoryStream();
+        try
+        {
+            DataSerializer.Serialize(memoryStream, dataTable);
+            return memoryStream;
+        }
+        finally
+        {
+            semaphoreSlimforSerialization.Release();
+        }
+        
+    }
     public static async Task<T> DeserializeAsync<T>(Stream stream, RuntimeTypeModel runtimeTypeModel)
     {
         await semaphoreSlimforDeserialization.WaitAsync();
         try
         {
             return runtimeTypeModel.Deserialize<T>(stream);
+        }
+        finally
+        {
+            semaphoreSlimforDeserialization.Release();
+        }
+    }
+    public static async Task<DataTable> DeserializeDataTable(Stream stream)
+    {
+        await semaphoreSlimforDeserialization.WaitAsync();
+        try
+        {
+            return DataSerializer.DeserializeDataTable(stream);
+        }
+        finally
+        {
+            semaphoreSlimforDeserialization.Release();
+        }
+    }
+    public static async Task<DataSet> DeserializeDataSet(Stream stream)
+    {
+        await semaphoreSlimforDeserialization.WaitAsync();
+        try
+        {
+            return DataSerializer.DeserializeDataSet(stream);
         }
         finally
         {
