@@ -8,6 +8,8 @@ using System;
 using System.Collections.Generic;
 using ProtoBuf;
 using System.Collections;
+using static System.Net.Mime.MediaTypeNames;
+using System.Runtime.Serialization;
 // Ensure you have imported the ProtoBuf namespace
 
 namespace Serialiation.PB.Console
@@ -52,7 +54,11 @@ namespace Serialiation.PB.Console
             System.Console.WriteLine("=====================");
             PrintValues();
         }
-
+        [OnDeserialized]
+        internal void OnDeserializedMethod(StreamingContext context)
+        {
+            System.Console.WriteLine("OnDeserializedMethod");
+        }
         public override void PrintValues()
         {
             System.Console.WriteLine($"Name: {Name}, Age: {Age}, PriceMoney: {PriceMoney}");
@@ -79,6 +85,7 @@ namespace Serialiation.PB.Console
         {
             System.Console.WriteLine($"Name: {Name}, Age: {Age}, Gender:- {Gender}");
         }
+        
     }
 
     [ProtoContract]
@@ -114,6 +121,8 @@ namespace Serialiation.PB.Console
             composer.Collection = new Dictionary<short, ProtoBaseClass>
             {
                 { 1, new ProtoChildClass("Child1", 10,0.0m) },
+                { 2, new ProtoChildClass("Child1", 10,1.2m) },
+                { 3, new ProtoChildClass("Child1", 10,1.0m) },
                 //{ 2, new ProtoChildClass1("Child2", 20,"male") }
             };
             var composerDict = new Dictionary<short, ProtoComposer>() {
