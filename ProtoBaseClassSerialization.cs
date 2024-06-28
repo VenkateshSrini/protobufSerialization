@@ -44,11 +44,8 @@ namespace Serialiation.PB.Console
             System.Console.WriteLine("=====================");
             PrintValues();
         }
-        [OnDeserialized]
-        internal void OnDeserializedMethod(StreamingContext context)
-        {
-            System.Console.WriteLine("OnDeserializedMethod");
-        }
+        public bool ShouldSerializePriceMoney() => true;
+        
         public override void PrintValues()
         {
             System.Console.WriteLine($"Name: {Name}, Age: {Age}, PriceMoney: {PriceMoney}");
