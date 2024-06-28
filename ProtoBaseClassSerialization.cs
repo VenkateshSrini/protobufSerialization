@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using System;
-using System.Collections.Generic;
-using ProtoBuf;
-using System.Collections;
-using static System.Net.Mime.MediaTypeNames;
+﻿using ProtoBuf;
 using System.Runtime.Serialization;
 // Ensure you have imported the ProtoBuf namespace
 
@@ -28,7 +18,7 @@ namespace Serialiation.PB.Console
             Name = "default";
             Properties = new Dictionary<short, string>();
         }
-       
+
         protected ProtoBaseClass(string name)
         {
             Name = name;
@@ -42,7 +32,7 @@ namespace Serialiation.PB.Console
     {
         public int Age;
         public Decimal PriceMoney;
-        
+
         protected ProtoChildClass() : base() { }
 
         public ProtoChildClass(string name, int age, decimal priceMoney) : base(name)
@@ -71,7 +61,7 @@ namespace Serialiation.PB.Console
         public int Age;
         public string Gender;
 
-       
+
         protected ProtoChildClass1() : base() { }
 
         public ProtoChildClass1(string name, int age, string gender) : base(name)
@@ -85,7 +75,7 @@ namespace Serialiation.PB.Console
         {
             System.Console.WriteLine($"Name: {Name}, Age: {Age}, Gender:- {Gender}");
         }
-        
+
     }
 
     [ProtoContract]
@@ -106,7 +96,7 @@ namespace Serialiation.PB.Console
             set { baseClasses = value; }
         }
 
-     
+
         public ProtoComposer()
         {
             Name = "abc";
@@ -136,7 +126,7 @@ namespace Serialiation.PB.Console
             System.Console.WriteLine("=====================");
             foreach (var item in deserializedComposer)
             {
-                
+
                 foreach (var baseClass in item.Value.Collection)
                 {
                     baseClass.Value.PrintValues();
