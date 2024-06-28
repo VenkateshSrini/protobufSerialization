@@ -32,20 +32,30 @@ namespace Serialiation.PB.Console
             Name = name;
             Properties = new Dictionary<short, string>();
         }
+        public abstract void PrintValues();
     }
 
     [ProtoContract(ImplicitFields = ImplicitFields.AllFields)]
     public class ProtoChildClass : ProtoBaseClass
     {
         public int Age;
-
+        public Decimal PriceMoney;
         
         protected ProtoChildClass() : base() { }
 
-        public ProtoChildClass(string name, int age) : base(name)
+        public ProtoChildClass(string name, int age, decimal priceMoney) : base(name)
         {
             Age = age;
             Properties.Add(1, "childclass");
+            PriceMoney = priceMoney;
+            System.Console.WriteLine("Before Serialization");
+            System.Console.WriteLine("=====================");
+            PrintValues();
+        }
+
+        public override void PrintValues()
+        {
+            System.Console.WriteLine($"Name: {Name}, Age: {Age}, PriceMoney: {PriceMoney}");
         }
     }
 
@@ -63,6 +73,11 @@ namespace Serialiation.PB.Console
             Age = age;
             Gender = gender;
             Properties.Add(1, "childclass1");
+        }
+
+        public override void PrintValues()
+        {
+            System.Console.WriteLine($"Name: {Name}, Age: {Age}, Gender:- {Gender}");
         }
     }
 
@@ -98,8 +113,8 @@ namespace Serialiation.PB.Console
             var composer = new ProtoComposer();
             composer.Collection = new Dictionary<short, ProtoBaseClass>
             {
-                { 1, new ProtoChildClass("Child1", 10) },
-                { 2, new ProtoChildClass1("Child2", 20,"male") }
+                { 1, new ProtoChildClass("Child1", 10,0.0m) },
+                //{ 2, new ProtoChildClass1("Child2", 20,"male") }
             };
             var composerDict = new Dictionary<short, ProtoComposer>() {
                 { 1, composer }
@@ -108,6 +123,16 @@ namespace Serialiation.PB.Console
             File.WriteAllBytes("proto.bin", ((MemoryStream)stream).ToArray());
             using var readStream = new MemoryStream(File.ReadAllBytes("proto.bin"));
             var deserializedComposer = await ProtobufSerializationHeper.DeserializeAsync<Dictionary<short, ProtoComposer>>(readStream);
+            System.Console.WriteLine("After Serialization");
+            System.Console.WriteLine("=====================");
+            foreach (var item in deserializedComposer)
+            {
+                
+                foreach (var baseClass in item.Value.Collection)
+                {
+                    baseClass.Value.PrintValues();
+                }
+            }
         }
     }
 }

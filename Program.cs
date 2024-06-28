@@ -2,6 +2,6 @@
 using Serialiation.PB.Console;
 
 //Console.WriteLine("Hello, World!");
-//await ProtoBaseClassSerialization.Run();
+await ProtoBaseClassSerialization.Run();
 //await ProtoInterfaceSerialization.Run();
-await DatatableSerialization.Run();
+//await DatatableSerialization.Run();
